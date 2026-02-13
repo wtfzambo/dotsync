@@ -318,3 +318,77 @@ func TestValidationError(t *testing.T) {
 		})
 	}
 }
+
+// TestCheckEntryConflict_OverlappingRoots_DetectsConflict tests bug #4:
+// Adding a file to an overlapping root should detect conflict.
+//
+// EXPECTED: Conflict detected - different inferred root vs existing root
+// ACTUAL (bug): No conflict, file gets added to wrong entry
+func TestCheckEntryConflict_OverlappingRoots_DetectsConflict(t *testing.T) {
+	home, err := os.UserHomeDir()
+	if err != nil {
+		t.Fatalf("failed to get home dir: %v", err)
+	}
+
+	// 1. Create manifest with BROAD entry: root="~/.config"
+	// This represents: user first added some file from ~/.config directory
+	m := manifest.New()
+	m.AddFile("config", "~/.config", "somefile")
+
+	// Verify the entry was added correctly
+	entry := m.GetEntry("config")
+	if entry == nil {
+		t.Fatal("failed to create 'config' entry")
+	}
+	t.Logf("Created entry 'config' with root: %s", entry.Root)
+
+	// 2. Try to add file: "~/.config/app/file.json" (more specific root)
+	// This should infer entry "app" with root "~/.config/app"
+	testPath := filepath.Join(home, ".config", "app", "file.json")
+	t.Logf("Testing file path: %s", testPath)
+
+	// Create the file so InferFromPath can work with it
+	if err := os.MkdirAll(filepath.Dir(testPath), 0755); err != nil {
+		t.Fatalf("failed to create test directory: %v", err)
+	}
+	if err := os.WriteFile(testPath, []byte("test"), 0644); err != nil {
+		t.Fatalf("failed to create test file: %v", err)
+	}
+
+	// Check what entry name would be inferred
+	inferred := InferFromPath(testPath)
+	if inferred == nil {
+		t.Fatal("failed to infer entry from path")
+	}
+	t.Logf("Inferred entry name: %s, root: %s", inferred.Name, inferred.Root)
+
+	// The inferred entry should be "app" with root "~/.config/app"
+	if inferred.Name != "app" {
+		t.Errorf("inferred name = %q, want %q", inferred.Name, "app")
+	}
+
+	// 3. EXPECTED: Conflict detected - inferred root (~/.config/app) is MORE SPECIFIC than existing root (~/.config)
+	// The file's parent directory (~/.config/app) is a SUBDIRECTORY of the existing entry's root (~/.config)
+	// This creates overlapping roots which should require explicit --name
+
+	conflict, err := CheckEntryConflict(testPath, "", m)
+	if err != nil {
+		t.Fatalf("unexpected error: %v", err)
+	}
+
+	t.Logf("CheckEntryConflict returned: %q", conflict)
+
+	// The bug: No conflict is detected, so file would be added to "config" entry
+	// even though it naturally belongs to a more specific entry "app"
+	if conflict == "" {
+		t.Errorf("BUG DETECTED: No conflict detected for overlapping roots")
+		t.Errorf("  File path: %s", testPath)
+		t.Errorf("  Inferred root: %s (for entry 'app')", inferred.Root)
+		t.Errorf("  Existing entry 'config' has root: %s", entry.Root)
+		t.Errorf("  EXPECTED: Should detect conflict - inferred root is a SUBDIRECTORY of existing root")
+		t.Errorf("  ACTUAL: No conflict returned, file would be added to wrong entry")
+		t.Logf("CONSEQUENCE: File would be absorbed into broad 'config' entry instead of 'app'")
+	} else {
+		t.Logf("Conflict correctly detected with entry: %s", conflict)
+	}
+}

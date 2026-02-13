@@ -4,6 +4,8 @@
 
 - When you need to understand the project, start by reading [INDEX.md](INDEX.md). It links to all relevant documentation. Browse only the files relevant to the task at hand.
 
+- [Taskfile.yml](Taskfile.yml) is used to run most common commands. Check it first before running a command from scratch.
+
 ## Software Engineering principles
 
 - **Skateboard before Lamborghini**: If an idea or concept needs to be validated, create first an MVP instead of a full fledged feature, validate the assumptions (e.g. if it can work, if it's useful, etc...) and only then expand it.

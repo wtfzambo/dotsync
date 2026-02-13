@@ -114,6 +114,23 @@ The system SHALL prevent conflicting entry configurations.
 - **THEN** system displays error: "Path conflicts with existing entry 'opencode'. Use that entry or choose a different name."
 - **THEN** system exits with non-zero status
 
+#### Scenario: Detect overlapping root directories
+
+- **WHEN** user runs `dotsync add ~/.config/app/file.json` where entry "config" exists with root `~/.config`
+- **THEN** system detects that inferred root `~/.config/app` is a subdirectory of existing root `~/.config`
+- **THEN** system displays error: "Path would create overlapping entry structure. Use explicit --name to resolve."
+- **THEN** system exits with non-zero status
+
+#### Scenario: Reject invalid entry name
+
+- **WHEN** user runs `dotsync add <path> --name ""`
+- **THEN** system displays error: "Entry name cannot be empty"
+- **THEN** system exits with non-zero status
+
+- **WHEN** user runs `dotsync add <path> --name "foo/bar"` or `--name "foo\bar"`
+- **THEN** system displays error: "Entry name cannot contain path separators (/ or \)"
+- **THEN** system exits with non-zero status
+
 ### Requirement: User can list tracked entries
 
 The system SHALL display all tracked entries and their status.

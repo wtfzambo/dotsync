@@ -21,6 +21,14 @@ The system SHALL create a temporary local backup before moving files to cloud st
 - **THEN** system deletes the backup
 - **THEN** system displays error explaining what went wrong
 
+#### Scenario: Handle read-only parent directory
+
+- **WHEN** system attempts to move a file from a read-only parent directory
+- **THEN** system detects directory is not writable before attempting move
+- **THEN** system displays error: "Cannot delete file from read-only directory: <path>"
+- **THEN** system exits with non-zero status
+- **THEN** file remains in original location only (no partial state)
+
 #### Scenario: Backup directory creation
 
 - **WHEN** `~/.cache/dotsync/backups/` does not exist

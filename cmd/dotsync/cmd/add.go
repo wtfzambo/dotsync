@@ -42,6 +42,13 @@ func init() {
 func runAdd(cmd *cobra.Command, args []string) error {
 	inputPath := args[0]
 
+	// 0. Validate --name flag if provided (Bug #3 fix)
+	if cmd.Flags().Changed("name") {
+		if err := validateEntryName(addName); err != nil {
+			return err
+		}
+	}
+
 	// 1. Load config (must be initialized)
 	cfg, err := config.Load()
 	if err != nil {
@@ -80,6 +87,13 @@ func runAdd(cmd *cobra.Command, args []string) error {
 		} else {
 			return err
 		}
+	}
+
+	// 3.5. Check parent directory write permissions (Bug #1 fix)
+	// We need to be able to delete the file after moving it, so check write permissions BEFORE copying
+	parentDir := filepath.Dir(absPath)
+	if err := pathutil.CheckWritePermission(parentDir); err != nil {
+		return fmt.Errorf("cannot delete file from read-only directory: %s\n%w", parentDir, err)
 	}
 
 	// 4. Load or create manifest
@@ -235,4 +249,22 @@ func promptForName() string {
 	fmt.Print("Entry name: ")
 	name, _ := reader.ReadString('\n')
 	return strings.TrimSpace(name)
+}
+
+// validateEntryName checks if an entry name is valid.
+// Entry names must not be empty and must not contain path separators.
+func validateEntryName(name string) error {
+	if name == "" {
+		return fmt.Errorf("entry name cannot be empty")
+	}
+
+	if strings.Contains(name, "/") || strings.Contains(name, "\\") {
+		return fmt.Errorf("entry name cannot contain path separators (/ or \\)")
+	}
+
+	if name == "." || name == ".." {
+		return fmt.Errorf("entry name cannot be '.' or '..'")
+	}
+
+	return nil
 }

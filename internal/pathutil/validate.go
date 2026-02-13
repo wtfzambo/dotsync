@@ -95,6 +95,7 @@ func CheckEntryConflict(absPath string, explicitName string, m *manifest.Manifes
 		return "", err
 	}
 
+	// First, check if file is under any existing entry's root
 	for name, entry := range m.Entries {
 		// Expand the entry root
 		entryRoot := ExpandHome(entry.Root)
@@ -106,6 +107,16 @@ func CheckEntryConflict(absPath string, explicitName string, m *manifest.Manifes
 				// User specified a different name, but file is under existing entry
 				return name, nil
 			}
+
+			// Bug #4 fix: If no explicit name, check if inferred root matches this entry's root
+			if explicitName == "" {
+				inferred := InferFromPath(absPath)
+				if inferred != nil && inferred.Root != entry.Root {
+					// Inferred root differs from existing entry's root - this is a conflict
+					return name, nil
+				}
+			}
+
 			// File belongs to this entry (no conflict, will be added to it)
 			return "", nil
 		}
@@ -120,13 +131,13 @@ func CheckEntryConflict(absPath string, explicitName string, m *manifest.Manifes
 		}
 	}
 
-	// Also check if a new root would conflict with existing entries
+	// Also check if a new root would conflict with existing entries (parent-child relationship)
 	inferred := InferFromPath(absPath)
 	if inferred != nil && explicitName == "" {
 		inferredRoot := ExpandHome(inferred.Root)
 		for name, entry := range m.Entries {
 			entryRoot := ExpandHome(entry.Root)
-			// Check if roots would overlap
+			// Check if roots would overlap (one is parent of the other)
 			if strings.HasPrefix(inferredRoot, entryRoot+string(filepath.Separator)) ||
 				strings.HasPrefix(entryRoot, inferredRoot+string(filepath.Separator)) {
 				return name, nil
@@ -136,6 +147,31 @@ func CheckEntryConflict(absPath string, explicitName string, m *manifest.Manifes
 
 	_ = home // silence unused warning
 	return "", nil
+}
+
+// CheckWritePermission checks if a directory is writable.
+// Returns an error if the directory doesn't have write permissions.
+func CheckWritePermission(dir string) error {
+	// Check if directory exists
+	info, err := os.Stat(dir)
+	if err != nil {
+		return fmt.Errorf("cannot access directory: %w", err)
+	}
+
+	if !info.IsDir() {
+		return fmt.Errorf("not a directory: %s", dir)
+	}
+
+	// Try creating a temporary file to test write permission
+	testFile := filepath.Join(dir, ".dotsync-write-test")
+	f, err := os.Create(testFile)
+	if err != nil {
+		return fmt.Errorf("directory is not writable: %w", err)
+	}
+	f.Close()
+	os.Remove(testFile)
+
+	return nil
 }
 
 // IsAlreadyTracked checks if a file is already tracked in the manifest.
