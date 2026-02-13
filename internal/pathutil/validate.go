@@ -44,6 +44,14 @@ func ValidateForAdd(absPath string) error {
 		}
 	}
 
+	// Check if it's a directory
+	if info.IsDir() {
+		return ValidationError{
+			Path:    absPath,
+			Message: "cannot add directories. Use 'dotsync add <file>' to add individual files.",
+		}
+	}
+
 	// Check for macOS plist files
 	if runtime.GOOS == "darwin" && isPlistFile(absPath) {
 		return ValidationError{

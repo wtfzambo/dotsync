@@ -78,9 +78,6 @@ dotsync add ~/.config/opencode/config.json
 # Add a dotfile
 dotsync add ~/.zshrc
 
-# Add an entire directory
-dotsync add ~/.config/nvim
-
 # Add with a custom entry name
 dotsync add ~/.aws/credentials --name aws-config
 ```
@@ -143,7 +140,7 @@ If auto-detection fails, you can specify the path manually using `dotsync init -
 | Command | Description | Examples |
 |---------|-------------|----------|
 | `init <provider>` | Initialize dotsync with a cloud storage provider | `dotsync init gdrive`<br>`dotsync init --path ~/my-cloud` |
-| `add <path>` | Add a file or directory to be synced | `dotsync add ~/.zshrc`<br>`dotsync add ~/.config/nvim --name neovim` |
+| `add <path>` | Add a file to be synced | `dotsync add ~/.zshrc`<br>`dotsync add ~/.config/test/config.json` |
 | `list` | List all tracked entries and their status | `dotsync list`<br>`dotsync list --details` |
 | `link [entry]` | Create symlinks for tracked files | `dotsync link`<br>`dotsync link opencode`<br>`dotsync link --backup` |
 | `unlink [entry]` | Remove symlinks and restore files locally | `dotsync unlink`<br>`dotsync unlink opencode` |
@@ -164,7 +161,7 @@ dotsync init gdrive
 
 #### `dotsync add`
 
-Adds a file or directory to be tracked and synced. The file is moved to cloud storage and replaced with a symlink.
+Adds a file to be tracked and synced. The file is moved to cloud storage and replaced with a symlink.
 
 **Flags:**
 - `-n, --name <name>` - Specify a custom entry name (otherwise inferred from path)
@@ -172,7 +169,7 @@ Adds a file or directory to be tracked and synced. The file is moved to cloud st
 **Example:**
 ```bash
 dotsync add ~/.config/opencode/config.json
-dotsync add ~/.aws --name aws-config
+dotsync add ~/.aws/credentials --name aws-config
 ```
 
 #### `dotsync list`

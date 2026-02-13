@@ -79,6 +79,12 @@ The system SHALL validate that files can be tracked.
 - **THEN** system displays error: "File not found: <path>"
 - **THEN** system exits with non-zero status
 
+#### Scenario: Reject directories
+
+- **WHEN** user runs `dotsync add <path>` where path is a directory
+- **THEN** system displays error: "Cannot add directories. Use 'dotsync add <file>' to add individual files."
+- **THEN** system exits with non-zero status
+
 #### Scenario: Warn for paths outside home directory
 
 - **WHEN** user adds a file outside home directory (e.g., `/etc/hosts`)

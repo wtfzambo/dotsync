@@ -57,10 +57,9 @@ The following tests should be run on each platform to ensure full compatibility.
 #### XDG Config Paths
 
 | Test | macOS | Linux | Notes |
-|------|-------|-------|-------|
+|------|-------|-------|-------|-------|
 | Add file in `~/.config/` | ✓ | ✓ | `dotsync add ~/.config/test/config.json` |
 | Entry name inference | ✓ | ✓ | Should infer entry name as "test" |
-| Add nested config directory | ✓ | ✓ | `dotsync add ~/.config/nvim/` |
 
 #### Dotfiles
 

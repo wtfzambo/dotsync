@@ -18,7 +18,7 @@ import (
 var addCmd = &cobra.Command{
 	Use:   "add <path>",
 	Short: "Add a file to be synced",
-	Long: `Add a file or directory to be tracked and synced via cloud storage.
+	Long: `Add a file to be tracked and synced via cloud storage.
 
 The file will be moved to cloud storage and a symlink will be created
 at the original location. The entry name is inferred from the path

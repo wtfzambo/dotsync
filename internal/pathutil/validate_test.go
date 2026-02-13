@@ -60,6 +60,30 @@ func TestValidateForAdd_Symlink(t *testing.T) {
 	}
 }
 
+// TestValidateForAdd_Directory tests validation rejects directories
+func TestValidateForAdd_Directory(t *testing.T) {
+	tmpDir := t.TempDir()
+	testDir := filepath.Join(tmpDir, "testdir")
+
+	if err := os.MkdirAll(testDir, 0755); err != nil {
+		t.Fatalf("failed to create test directory: %v", err)
+	}
+
+	err := ValidateForAdd(testDir)
+	if err == nil {
+		t.Fatal("expected error for directory")
+	}
+
+	verr, ok := err.(ValidationError)
+	if !ok {
+		t.Fatalf("expected ValidationError, got %T", err)
+	}
+
+	if verr.IsWarn {
+		t.Error("expected fatal error, got warning")
+	}
+}
+
 // TestValidateForAdd_PlistFile tests macOS plist rejection
 func TestValidateForAdd_PlistFile(t *testing.T) {
 	if runtime.GOOS != "darwin" {
