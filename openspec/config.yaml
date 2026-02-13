@@ -1,0 +1,63 @@
+schema: explore-first
+
+context: |
+  # dotsync - Developer Config File Sync Tool
+
+  ## What It Is
+  A CLI tool that syncs developer config files (dotfiles, AI tool configs, etc.)
+  across multiple machines by leveraging cloud storage providers (Google Drive,
+  Dropbox, iCloud) for the actual sync mechanism.
+
+  ## Tech Stack
+  - Language: Go
+  - Distribution: Single binary (no dependencies)
+  - Target platforms: macOS, Linux, Windows (macOS first)
+
+  ## Core Philosophy
+  - Don't reinvent sync - delegate to cloud providers
+  - Keep it simple - this is a weekend project scope
+  - Infer when possible, prompt when unclear
+  - Preserve directory structure relative to app root
+
+  ## Target Users
+  Developers who:
+  - Use multiple machines (work laptop, personal laptop, desktop)
+  - Use AI coding tools (OpenCode, Cursor, Claude Code, etc.)
+  - Want automatic sync without manual git commit/push/pull
+
+  ## Key Architecture Decisions
+  - Storage: `<cloud-folder>/dotsync/<name>/<relative-path>`
+  - Manifest: `.dotsync.json` at storage root
+  - Symlinks: Source files become symlinks to cloud storage
+  - No versioning: Cloud provider handles this (if at all)
+
+  ## MVP Commands
+  - `init` - Set up storage location
+  - `add <path> [name]` - Track a file/directory
+  - `link <name>` - Create symlinks on new machine
+  - `unlink <name>` - Remove symlinks, restore files
+  - `list` - Show tracked entries
+
+  ## Known Constraints
+  - macOS 14+ breaks symlinks for ~/Library/Preferences/*.plist
+  - This is acceptable - most dev tools use ~/.config/ or ~/.*
+
+  ## Prior Art Studied
+  - chezmoi (18k stars) - Git-backed, manual sync, feature-rich
+  - mackup (15k stars) - Cloud storage + symlinks, 500+ app support
+  - gopass (6.7k stars) - Has autopush/autosync concepts
+  - yadm - Git wrapper for dotfiles
+
+rules:
+  proposal:
+    - Keep proposals concise and focused
+    - Always include Non-goals section
+    - Reference prior art where relevant
+  design:
+    - Include data structure definitions (manifest format, etc.)
+    - Document edge cases and how they're handled
+    - Keep platform-specific concerns separate
+  tasks:
+    - Tasks should be completable in 1-2 hours max
+    - Group related tasks together
+    - Mark dependencies between tasks clearly
