@@ -149,7 +149,12 @@ func MoveFile(src, dst string) error {
 		return err
 	}
 
-	return os.Remove(src)
+	if err := os.Remove(src); err != nil {
+		os.Remove(dst)
+		return fmt.Errorf("removing original file: %w", err)
+	}
+
+	return nil
 }
 
 // CopyFile copies a file from src to dst, preserving permissions.
