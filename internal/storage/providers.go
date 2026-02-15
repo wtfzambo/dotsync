@@ -94,11 +94,6 @@ var linuxPaths = map[Provider]ProviderPaths{
 		Primary:  "~/Dropbox",
 		Fallback: "",
 	},
-	// iCloud is not available on Linux
-	ProviderICloud: {
-		Primary:  "",
-		Fallback: "",
-	},
 }
 
 // Windows cloud storage paths (future - paths TBD)
