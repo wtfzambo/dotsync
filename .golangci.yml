@@ -1,0 +1,79 @@
+version: "2"
+
+run:
+  timeout: 5m
+  tests: false
+
+linters:
+  default: 'none'
+  enable:
+    - errcheck
+    - gosec
+    - misspell
+    - unconvert
+    - unparam
+    - sloglint
+
+  settings:
+    errcheck:
+      exclude-functions:
+        - (*database/sql.DB).Close
+        - (*database/sql.Rows).Close
+        - (*database/sql.Tx).Rollback
+        - (*database/sql.Stmt).Close
+        - (*database/sql.Conn).Close
+        - (*os.File).Close
+        - (os).RemoveAll
+        - (os).Remove
+        - (os).Setenv
+        - (os).Unsetenv
+        - (os).Chdir
+        - (os).MkdirAll
+        - (fmt).Sscanf
+        - (fmt).Fprintf
+        - (fmt).Fprintln
+        - fmt.Fprintf
+        - fmt.Fprintln
+    misspell:
+      locale: US
+
+  exclusions:
+    rules:
+      # G301: 0755 for directories - needed for executable dotfiles/symlink targets
+      - path: 'internal/backup/backup\.go|internal/config/io\.go|internal/manifest/io\.go|internal/storage/validate\.go|internal/symlink/symlink\.go'
+        linters:
+          - gosec
+        text: "G301"
+      # G306: 0644 for config/manifest files - needed for sharing/debugging
+      - path: 'internal/config/io\.go|internal/manifest/io\.go'
+        linters:
+          - gosec
+        text: "G306"
+      # G304: Operating on user-provided dotfile paths is the core functionality
+      - path: 'internal/backup/backup\.go|internal/config/io\.go|internal/manifest/io\.go|internal/pathutil/validate\.go|internal/storage/validate\.go|internal/symlink/symlink\.go'
+        linters:
+          - gosec
+        text: "G304"
+      # G104: Close/Remove in test file creation is non-critical
+      - path: 'internal/pathutil/validate\.go|internal/storage/validate\.go|internal/backup/backup\.go|internal/symlink/symlink\.go'
+        linters:
+          - gosec
+        text: "G104"
+      # errcheck: Restore/Cleanup in rollback paths - errors already handled
+      - path: 'cmd/dotsync/cmd/add\.go|cmd/dotsync/cmd/link\.go|cmd/dotsync/cmd/unlink\.go'
+        linters:
+          - errcheck
+        text: "Error return value of .* is not checked"
+      # errcheck: os.Remove in cleanup/error paths
+      - path: 'internal/backup/backup\.go|internal/symlink/symlink\.go|internal/pathutil/validate\.go|internal/storage/validate\.go'
+        linters:
+          - errcheck
+        text: "os.Remove"
+      # G104: Restore/MoveFile errors in rollback paths are non-critical
+      - path: 'cmd/dotsync/cmd/add\.go|cmd/dotsync/cmd/link\.go|cmd/dotsync/cmd/unlink\.go'
+        linters:
+          - gosec
+        text: "G104"
+
+issues:
+  uniq-by-line: true
