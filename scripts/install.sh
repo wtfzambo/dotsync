@@ -105,10 +105,10 @@ install_from_release() {
 
     # Construct download URL
     local archive_name="${BINARY_NAME}_${version}_${platform}.tar.gz"
-    local download_url="https://github.com/${REPO}/releases/download/${version}/${archive_name}"
+    local download_url="https://github.com/${REPO}/releases/download/v${version}/${archive_name}"
 
     log_info "Downloading ${archive_name}..."
-    
+
     cd "$tmp_dir"
     if command -v curl &> /dev/null; then
         if ! curl -fsSL -o "$archive_name" "$download_url"; then
