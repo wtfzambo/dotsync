@@ -13,7 +13,7 @@ tasks:
   build:
     desc: Build the binary with optimizations
     cmds:
-      - go build -ldflags "-s -w" -o {{.BUILD_DIR}}/{{.BINARY}} ./cmd/dotsync
+      - go build -ldflags "-s -w -X main.version=$(git describe --tags --always --dirty 2>/dev/null || echo 'dev') -X main.commit=$(git rev-parse --short HEAD 2>/dev/null || echo 'none') -X main.date=$(date -u +%Y-%m-%dT%H:%M:%SZ) -X main.builtBy=task" -o {{.BUILD_DIR}}/{{.BINARY}} ./cmd/dotsync
     sources:
       - '**/*.go'
     generates:
@@ -22,7 +22,7 @@ tasks:
   dev:
     desc: Build the binary without optimizations (faster)
     cmds:
-      - go build -o {{.BUILD_DIR}}/{{.BINARY}} ./cmd/dotsync
+      - go build -ldflags "-X main.version=dev -X main.commit=$(git rev-parse --short HEAD 2>/dev/null || echo 'none') -X main.date=$(date -u +%Y-%m-%dT%H:%M:%SZ) -X main.builtBy=task" -o {{.BUILD_DIR}}/{{.BINARY}} ./cmd/dotsync
 
   test:
     desc: Run all tests

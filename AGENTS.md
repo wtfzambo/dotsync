@@ -15,6 +15,30 @@
 - **Modularity**: Build for flexibility and optionality, so it's easy to add, remove or change features.
 - **Two-way door decisions**: Make decisions that can be easily reverted (like a two-way door, you can go in and go out).
 
-## OpenSpec rules
+## Commit Standards
 
-- When it is required of the user to continue an OpenSpec loop via a command (e.g. /opsx-continue), use the "question" tool to prompt the user with the command to use next, including an open-ended option where the user can type it in.
+This project uses [Conventional Commits](https://www.conventionalcommits.org/en/v1.0.0/) enforced by commitizen. Commit messages must follow this format:
+
+```
+<type>[optional scope]: <description>
+
+[optional body]
+
+[optional footer(s)]
+```
+
+**Types:**
+- `fix` - Bug fixes
+- `feat` - New user facing features
+- `docs` - Documentation changes
+- `style` - Code style changes (formatting, etc.)
+- `refactor` - Code refactoring
+- `test` - Adding or updating tests
+- `build` - Changes that affect the build system or external dependencies
+- `ci` - Changes to our CI configuration files and scripts
+- `perf` - A code change that improves performance
+- `chore` - Dependencies, etc. Anything that doesn't fit the above types
+
+If a commit introduces a breaking API change (correlating with MAJOR in Semantic Versioning), use `BREAKING CHANGE:` in the footer or append a `!` after the type/scope. A BREAKING CHANGE can be part of commits of any type.
+
+Use `git commit` (pre-commit hooks will validate).

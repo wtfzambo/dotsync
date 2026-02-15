@@ -1,5 +1,9 @@
 # dotsync
 
+[![Release](https://img.shields.io/github/release/wtfzambo/dotsync.svg)](https://github.com/wtfzambo/dotsync/releases/latest)
+[![Test](https://github.com/wtfzambo/dotsync/actions/workflows/test.yml/badge.svg)](https://github.com/wtfzambo/dotsync/actions/workflows/test.yml)
+[![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
+
 A lightweight CLI tool for syncing config files across machines using cloud storage providers.
 
 ## Overview
@@ -20,8 +24,18 @@ A lightweight CLI tool for syncing config files across machines using cloud stor
 
 ### Prerequisites
 
-- Go 1.21 or later
 - One of the supported cloud storage providers (Google Drive, Dropbox, or iCloud Drive) installed and syncing
+- For building from source: Go 1.23 or later
+
+### Quick Install (macOS & Linux)
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/wtfzambo/dotsync/main/scripts/install.sh | bash
+```
+
+### Install Pre-built Binary
+
+Download the latest release for your platform from the [releases page](https://github.com/wtfzambo/dotsync/releases) and extract it to a directory in your PATH.
 
 ### Install from source
 
@@ -42,7 +56,7 @@ go install github.com/wtfzambo/dotsync/cmd/dotsync@latest
 ### Verify installation
 
 ```bash
-dotsync --help
+dotsync --version
 ```
 
 ## Quick Start
@@ -283,10 +297,6 @@ task tidy         # Tidy Go modules
 task lint         # Run linters (requires golangci-lint)
 task install      # Install to GOPATH/bin
 ```
-
-## License
-
-MIT License - see LICENSE file for details.
 
 ## Contributing
 
