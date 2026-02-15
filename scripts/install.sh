@@ -94,7 +94,7 @@ install_from_release() {
         return 1
     fi
 
-    version=$(echo "$release_json" | grep '"tag_name"' | sed -E 's/.*"tag_name": "([^"]+)".*/\1/')
+    version=$(echo "$release_json" | grep '"tag_name"' | sed -E 's/.*"tag_name": "([^"]+)".*/\1/' | sed 's/^v//')
 
     if [ -z "$version" ]; then
         log_error "Failed to fetch latest version"
