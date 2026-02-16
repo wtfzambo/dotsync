@@ -10,6 +10,10 @@ A lightweight CLI tool for syncing config files across machines using cloud stor
 
 **dotsync** helps you keep your developer config files (dotfiles, AI tool configs, etc.) synchronized across multiple machines without the complexity of version control or specialized sync services. It works by moving your config files to cloud storage and creating symlinks at their original locations, letting your existing cloud provider (Google Drive, Dropbox, or iCloud) handle the synchronization.
 
+## Why
+
+I have several tools that I use on a daily basis for software development and most of them have local only configs. Because I work on 2 machines, I want the configs of those tools to stay in sync. For a while I was doing it manually, using Google Drive as backend and creating symlinks for all the config files I needed. Eventually it became tedious and repetitive, and so I made `dotsync` to streamline the process.
+
 ## Features
 
 - **Multi-provider support** - Works with Google Drive, Dropbox, and iCloud Drive
@@ -25,7 +29,7 @@ A lightweight CLI tool for syncing config files across machines using cloud stor
 ### Prerequisites
 
 - One of the supported cloud storage providers (Google Drive, Dropbox, or iCloud Drive) installed and syncing
-- For building from source: Go 1.23 or later
+- For building from source: Go 1.25 or later
 
 ### Quick Install (macOS & Linux)
 
@@ -132,8 +136,12 @@ dotsync will create symlinks pointing to the cloud-synced files. If local files 
 ### Google Drive
 
 - **macOS:** `~/Library/CloudStorage/GoogleDrive-*/My Drive`
-- **Linux:** `~/Google Drive` or `~/google-drive`
+- **Linux:** ⚠️ `~/Google Drive` or `~/google-drive`
 - Auto-detection: Yes
+
+> [!WARNING]
+> **Google Drive** doesn't support Linux natively. GNOME has a Google built-in Google integration that does mount a Google Drive folder locally, but browsing it through the terminal is impossible due to the fact that files and directories are stored with their IDs rather than their names, which likely will hinder the functionality of `dotsync`.
+> If you encounter this issue, one way (admittedly tedious) to circumvent it is to use something like [google-drive-ocamlfuse](https://github.com/astrada/google-drive-ocamlfuse).
 
 ### Dropbox
 
