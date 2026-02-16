@@ -140,7 +140,7 @@ dotsync will create symlinks pointing to the cloud-synced files. If local files 
 - Auto-detection: Yes
 
 > [!WARNING]
-> **Google Drive** doesn't support Linux natively. GNOME has a Google built-in Google integration that does mount a Google Drive folder locally, but browsing it through the terminal is impossible due to the fact that files and directories are stored with their IDs rather than their names, which likely will hinder the functionality of `dotsync`.
+> **Google Drive** doesn't support Linux natively. GNOME has a built-in Google integration that does mount a Google Drive folder locally, but browsing it through the terminal is impossible due to the fact that files and directories are stored with their IDs rather than their names, which likely will hinder the functionality of `dotsync`.
 > If you encounter this issue, one way (admittedly tedious) to circumvent it is to use something like [google-drive-ocamlfuse](https://github.com/astrada/google-drive-ocamlfuse).
 
 ### Dropbox
