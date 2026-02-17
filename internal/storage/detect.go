@@ -67,15 +67,3 @@ func findPath(pattern string) string {
 
 	return ""
 }
-
-// ExpandHome is exported for use by other packages.
-// Deprecated: Use pathutil.ExpandHome instead.
-func ExpandHome(path string) string {
-	return pathutil.ExpandHome(path)
-}
-
-// ContractHome replaces the home directory with ~ in a path.
-// Deprecated: Use pathutil.ContractHome instead.
-func ContractHome(path string) string {
-	return pathutil.ContractHome(path)
-}

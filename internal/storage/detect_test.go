@@ -31,50 +31,6 @@ func TestDetectPath(t *testing.T) {
 	}
 }
 
-// TestExpandHome tests home directory expansion
-func TestExpandHome(t *testing.T) {
-	home, err := os.UserHomeDir()
-	if err != nil {
-		t.Fatalf("failed to get home dir: %v", err)
-	}
-
-	tests := []struct {
-		name string
-		path string
-		want string
-	}{
-		{
-			name: "tilde only",
-			path: "~",
-			want: home,
-		},
-		{
-			name: "tilde with path",
-			path: "~/.config",
-			want: filepath.Join(home, ".config"),
-		},
-		{
-			name: "no tilde",
-			path: "/usr/local",
-			want: "/usr/local",
-		},
-		{
-			name: "relative path",
-			path: "relative/path",
-			want: "relative/path",
-		},
-	}
-
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			got := ExpandHome(tt.path)
-			if got != tt.want {
-				t.Errorf("ExpandHome(%q) = %q, want %q", tt.path, got, tt.want)
-			}
-		})
-	}
-}
-
 // TestFindPath tests path finding with various patterns
 func TestFindPath(t *testing.T) {
 	tmpDir := t.TempDir()
@@ -261,19 +217,5 @@ func TestPlatformSpecificPaths(t *testing.T) {
 		if windowsPaths == nil {
 			t.Fatal("windowsPaths is nil")
 		}
-	}
-}
-
-// TestExpandHome_EnvVars tests environment variable expansion
-func TestExpandHome_EnvVars(t *testing.T) {
-	// This is primarily for Windows, but we can test the function works
-	path := "%USERPROFILE%/test"
-	expanded := ExpandHome(path)
-
-	// On non-Windows, %USERPROFILE% won't be expanded
-	// On Windows, it will be expanded by os.ExpandEnv in findPath
-	// We're just testing the function doesn't crash
-	if expanded == "" {
-		t.Error("ExpandHome returned empty string")
 	}
 }
