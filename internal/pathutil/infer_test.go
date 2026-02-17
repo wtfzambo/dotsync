@@ -25,21 +25,21 @@ func TestInferFromPath_XDGConfig(t *testing.T) {
 			name:     "opencode config file",
 			path:     filepath.Join(home, ".config", "opencode", "config.json"),
 			wantName: "opencode",
-			wantRoot: "~/.config/opencode",
+			wantRoot: filepath.Join("~", ".config", "opencode"),
 			wantRel:  "config.json",
 		},
 		{
 			name:     "nested config file",
 			path:     filepath.Join(home, ".config", "cursor", "settings", "user.json"),
 			wantName: "cursor",
-			wantRoot: "~/.config/cursor",
+			wantRoot: filepath.Join("~", ".config", "cursor"),
 			wantRel:  filepath.Join("settings", "user.json"),
 		},
 		{
 			name:     "vscode config",
 			path:     filepath.Join(home, ".config", "Code", "User", "settings.json"),
 			wantName: "Code",
-			wantRoot: "~/.config/Code",
+			wantRoot: filepath.Join("~", ".config", "Code"),
 			wantRel:  filepath.Join("User", "settings.json"),
 		},
 	}
@@ -81,21 +81,21 @@ func TestInferFromPath_HiddenDir(t *testing.T) {
 			name:     "ssh config",
 			path:     filepath.Join(home, ".ssh", "config"),
 			wantName: "ssh",
-			wantRoot: "~/.ssh",
+			wantRoot: filepath.Join("~", ".ssh"),
 			wantRel:  "config",
 		},
 		{
 			name:     "aws credentials",
 			path:     filepath.Join(home, ".aws", "credentials"),
 			wantName: "aws",
-			wantRoot: "~/.aws",
+			wantRoot: filepath.Join("~", ".aws"),
 			wantRel:  "credentials",
 		},
 		{
 			name:     "nested hidden dir",
 			path:     filepath.Join(home, ".vscode", "extensions", "settings.json"),
 			wantName: "vscode",
-			wantRoot: "~/.vscode",
+			wantRoot: filepath.Join("~", ".vscode"),
 			wantRel:  filepath.Join("extensions", "settings.json"),
 		},
 	}
@@ -339,7 +339,7 @@ func TestContractHome(t *testing.T) {
 		{
 			name: "path under home",
 			path: filepath.Join(home, ".config", "opencode"),
-			want: "~/.config/opencode",
+			want: filepath.Join("~", ".config", "opencode"),
 		},
 		{
 			name: "path outside home",
@@ -423,8 +423,8 @@ func TestAbsolutePath(t *testing.T) {
 		},
 		{
 			name:    "already absolute",
-			path:    "/usr/local/bin",
-			want:    "/usr/local/bin",
+			path:    filepath.Join(home, "test"),
+			want:    filepath.Join(home, "test"),
 			wantErr: false,
 		},
 	}

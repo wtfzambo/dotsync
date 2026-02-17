@@ -3,6 +3,7 @@ package symlink
 import (
 	"os"
 	"path/filepath"
+	"runtime"
 	"testing"
 )
 
@@ -72,6 +73,10 @@ func TestCreate_WithNestedDirectories(t *testing.T) {
 
 // TestCreate_ParentDirectoryPermissions tests that parent directories are created with 755 permissions
 func TestCreate_ParentDirectoryPermissions(t *testing.T) {
+	if runtime.GOOS == "windows" {
+		t.Skip("skipping permission test on Windows - permissions work differently")
+	}
+
 	tmpDir := t.TempDir()
 	targetFile := filepath.Join(tmpDir, "target.txt")
 	parentDir := filepath.Join(tmpDir, "nested", "deep")

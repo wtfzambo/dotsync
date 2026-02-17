@@ -126,7 +126,8 @@ func ExpandHome(path string) string {
 	if path == "~" {
 		return home
 	}
-	if strings.HasPrefix(path, "~/") {
+	// Handle both ~/ (Unix) and ~\ (Windows)
+	if strings.HasPrefix(path, "~/") || strings.HasPrefix(path, "~\\") {
 		return filepath.Join(home, path[2:])
 	}
 

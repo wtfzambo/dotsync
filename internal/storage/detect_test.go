@@ -95,7 +95,7 @@ func TestContractHome(t *testing.T) {
 		{
 			name: "path under home",
 			path: filepath.Join(home, ".config", "dotsync"),
-			want: "~/.config/dotsync",
+			want: filepath.Join("~", ".config", "dotsync"),
 		},
 		{
 			name: "path outside home",

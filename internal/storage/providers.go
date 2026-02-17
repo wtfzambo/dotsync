@@ -96,19 +96,19 @@ var linuxPaths = map[Provider]ProviderPaths{
 	},
 }
 
-// Windows cloud storage paths (future - paths TBD)
+// Windows cloud storage paths
 var windowsPaths = map[Provider]ProviderPaths{
 	ProviderGoogleDrive: {
-		Primary:  "%USERPROFILE%\\Google Drive",
-		Fallback: "",
+		Primary:  `G:\My Drive`,
+		Fallback: ``,
 	},
 	ProviderDropbox: {
-		Primary:  "%USERPROFILE%\\Dropbox",
-		Fallback: "",
+		Primary:  `~/Dropbox`,
+		Fallback: ``,
 	},
 	ProviderICloud: {
-		Primary:  "%USERPROFILE%\\iCloudDrive",
-		Fallback: "",
+		Primary:  `~/iCloudDrive`,
+		Fallback: ``,
 	},
 }
 

@@ -3,6 +3,7 @@ package storage
 import (
 	"os"
 	"path/filepath"
+	"runtime"
 	"testing"
 )
 
@@ -48,10 +49,10 @@ func TestValidatePath(t *testing.T) {
 			name: "read-only directory",
 			setup: func() string {
 				dir := filepath.Join(tmpDir, "readonly")
-				os.MkdirAll(dir, 0555) // read-only
+				os.MkdirAll(dir, 0555) // read-only (Unix only)
 				return dir
 			},
-			wantErr: true,
+			wantErr: runtime.GOOS != "windows", // Windows permissions work differently
 			errMsg:  "cannot write",
 		},
 	}

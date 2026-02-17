@@ -182,8 +182,8 @@ func TestCheckEntryConflict(t *testing.T) {
 	}
 
 	m := manifest.New()
-	m.AddFile("opencode", "~/.config/opencode", "config.json")
-	m.AddFile("vscode", "~/.config/Code", "settings.json")
+	m.AddFile("opencode", filepath.Join("~", ".config", "opencode"), "config.json")
+	m.AddFile("vscode", filepath.Join("~", ".config", "Code"), "settings.json")
 
 	tests := []struct {
 		name         string
@@ -236,8 +236,8 @@ func TestIsAlreadyTracked(t *testing.T) {
 	}
 
 	m := manifest.New()
-	m.AddFile("opencode", "~/.config/opencode", "config.json")
-	m.AddFile("opencode", "~/.config/opencode", "agents/review.md")
+	m.AddFile("opencode", filepath.Join("~", ".config", "opencode"), "config.json")
+	m.AddFile("opencode", filepath.Join("~", ".config", "opencode"), filepath.Join("agents", "review.md"))
 	m.AddFile("zsh", "~", ".zshrc")
 
 	tests := []struct {
@@ -333,7 +333,7 @@ func TestCheckEntryConflict_OverlappingRoots_DetectsConflict(t *testing.T) {
 	// 1. Create manifest with BROAD entry: root="~/.config"
 	// This represents: user first added some file from ~/.config directory
 	m := manifest.New()
-	m.AddFile("config", "~/.config", "somefile")
+	m.AddFile("config", filepath.Join("~", ".config"), "somefile")
 
 	// Verify the entry was added correctly
 	entry := m.GetEntry("config")
