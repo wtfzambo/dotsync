@@ -6,6 +6,7 @@ import (
 	"io"
 	"os"
 	"path/filepath"
+	"runtime"
 )
 
 // Create creates a symlink at linkPath pointing to targetPath.
@@ -19,6 +20,9 @@ func Create(linkPath, targetPath string) error {
 
 	// Create the symlink
 	if err := os.Symlink(targetPath, linkPath); err != nil {
+		if runtime.GOOS == "windows" {
+			return fmt.Errorf("creating symlink: %w\n\nWindows 10/11 requires Developer Mode or Administrator privileges to create symlinks.\nPlease enable Developer Mode in Settings > Privacy & Security > Developer Mode,\nor run this command as Administrator", err)
+		}
 		return fmt.Errorf("creating symlink: %w", err)
 	}
 

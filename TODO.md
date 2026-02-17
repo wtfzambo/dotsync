@@ -1,6 +1,5 @@
 # Todo
 
-[] - Add Windows paths default discoveries - GDrive: G:\My Drive. Dropbox: ~\Dropbox. iCloud Drive for later.
 [] - In taskfile, customize build command to work on windows (basically add .exe and for date function use `Get-Date -Format "yyyy-MM-dd"`)
 [] - Add warning that windows 10-11 needs admin / developer mode on to create symlinks. (where? In docs? In program? both?)
 

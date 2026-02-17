@@ -272,6 +272,21 @@ dotsync stores its local configuration at `~/.config/dotsync/config.json`. This 
 
 ## Important Notes
 
+### Windows Symlinks
+
+**Windows 10/11 requires Developer Mode or Administrator privileges** to create symlinks. If you encounter "access denied" errors when running `dotsync add` or `dotsync link`:
+
+1. **Enable Developer Mode** (recommended):
+   - Open Settings > Privacy & Security > For developers
+   - Turn on "Developer Mode"
+   - This allows any user to create symlinks without elevation
+
+2. **Run as Administrator** (alternative):
+   - Open PowerShell or Command Prompt as Administrator
+   - Run dotsync commands from the elevated shell
+
+Without either of these, dotsync cannot create the symlinks needed for file synchronization.
+
 ### macOS plist files
 
 **macOS 14+ does NOT support symlinks for plist files** in `~/Library/Preferences/`. dotsync will reject these files with an error message. For syncing plist files, use [Mackup](https://github.com/lra/mackup) with [Copy mode](https://github.com/lra/mackup?tab=readme-ov-file#copy-mode) instead.
