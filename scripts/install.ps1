@@ -249,7 +249,7 @@ function Main {
     
     # Try downloading from GitHub releases first
     if (Install-FromRelease -Platform $platform) {
-        Test-Installation
+        $null = Test-Installation
         exit 0
     }
     
@@ -258,7 +258,7 @@ function Main {
     # Try go install as fallback
     if (Test-Go) {
         if (Install-WithGo) {
-            Test-Installation
+            $null = Test-Installation
             exit 0
         }
     }
