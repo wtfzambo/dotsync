@@ -67,7 +67,7 @@ function Install-FromRelease {
         Write-Info "Latest version: $version"
         
         # Construct download URL
-        $archiveName = "dotsync_${version}_${Platform}.tar.gz"
+        $archiveName = "dotsync_${version}_${Platform}.zip"
         $downloadUrl = "https://github.com/$REPO/releases/download/v$version/$archiveName"
         
         Write-Info "Downloading $archiveName..."
