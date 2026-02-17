@@ -9,6 +9,17 @@ $ErrorActionPreference = "Stop"
 $REPO = "wtfzambo/dotsync"
 $BINARY_NAME = "dotsync.exe"
 
+# Detect if running via iex/irm (no script file path means invoked via Invoke-Expression)
+$script:RunningViaIEX = -not $MyInvocation.ScriptName
+
+function Stop-Install {
+    param($ExitCode = 0)
+    if ($script:RunningViaIEX) {
+        return
+    }
+    exit $ExitCode
+}
+
 function Write-Info {
     param($Message)
     Write-Host "==> $Message" -ForegroundColor Cyan
@@ -36,7 +47,8 @@ function Get-Platform {
         "ARM64" { "arm64" }
         default { 
             Write-Error "Unsupported architecture: $env:PROCESSOR_ARCHITECTURE"
-            exit 1
+            Stop-Install 1
+            return
         }
     }
     return "Windows_$arch"
@@ -240,7 +252,8 @@ function Main {
     # Check if running on Windows
     if (-not $IsWindows -and $env:OS -ne "Windows_NT") {
         Write-Error "This installer is for Windows only. Use install.sh for Linux/macOS."
-        exit 1
+        Stop-Install 1
+        return
     }
     
     Write-Info "Detecting platform..."
@@ -250,7 +263,8 @@ function Main {
     # Try downloading from GitHub releases first
     if (Install-FromRelease -Platform $platform) {
         $null = Test-Installation
-        exit 0
+        Stop-Install 0
+        return
     }
     
     Write-Warning "Failed to install from releases, trying fallback method..."
@@ -259,7 +273,8 @@ function Main {
     if (Test-Go) {
         if (Install-WithGo) {
             $null = Test-Installation
-            exit 0
+            Stop-Install 0
+            return
         }
     }
     
@@ -274,7 +289,7 @@ function Main {
     Write-Host "  1. Install Go 1.25+ from https://go.dev/dl/"
     Write-Host "  2. Run: go install github.com/$REPO/cmd/dotsync@latest"
     Write-Host ""
-    exit 1
+    Stop-Install 1
 }
 
 Main
