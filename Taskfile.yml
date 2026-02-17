@@ -1,8 +1,15 @@
 version: '3'
 
 vars:
-  BINARY: dotsync
+  BINARY:
+    sh: "{{if eq OS `windows`}}echo dotsync.exe{{else}}echo dotsync{{end}}"
   BUILD_DIR: bin
+  GIT_VERSION:
+    sh: "git describe --tags --always --dirty 2>/dev/null || echo dev"
+  GIT_COMMIT:
+    sh: "git rev-parse --short HEAD 2>/dev/null || echo none"
+  BUILD_DATE:
+    sh: 'echo {{now | date "2006-01-02T15:04:05Z"}}'
 
 tasks:
   default:
@@ -13,7 +20,7 @@ tasks:
   build:
     desc: Build the binary with optimizations
     cmds:
-      - go build -ldflags "-s -w -X main.version=$(git describe --tags --always --dirty 2>/dev/null || echo 'dev') -X main.commit=$(git rev-parse --short HEAD 2>/dev/null || echo 'none') -X main.date=$(date -u +%Y-%m-%dT%H:%M:%SZ) -X main.builtBy=task" -o {{.BUILD_DIR}}/{{.BINARY}} ./cmd/dotsync
+      - go build -ldflags "-s -w -X main.version={{.GIT_VERSION}} -X main.commit={{.GIT_COMMIT}} -X main.date={{.BUILD_DATE}} -X main.builtBy=task" -o {{.BUILD_DIR}}/{{.BINARY}} ./cmd/dotsync
     sources:
       - '**/*.go'
     generates:
@@ -22,7 +29,7 @@ tasks:
   dev:
     desc: Build the binary without optimizations (faster)
     cmds:
-      - go build -ldflags "-X main.version=dev -X main.commit=$(git rev-parse --short HEAD 2>/dev/null || echo 'none') -X main.date=$(date -u +%Y-%m-%dT%H:%M:%SZ) -X main.builtBy=task" -o {{.BUILD_DIR}}/{{.BINARY}} ./cmd/dotsync
+      - go build -ldflags "-X main.version=dev -X main.commit={{.GIT_COMMIT}} -X main.date={{.BUILD_DATE}} -X main.builtBy=task" -o {{.BUILD_DIR}}/{{.BINARY}} ./cmd/dotsync
 
   test:
     desc: Run all tests
@@ -38,8 +45,8 @@ tasks:
   clean:
     desc: Clean build artifacts
     cmds:
-      - rm -rf {{.BUILD_DIR}}
-      - rm -f coverage.out coverage.html
+      - "{{if eq OS `windows`}}powershell Remove-Item -Recurse -Force {{.BUILD_DIR}} -ErrorAction SilentlyContinue{{else}}rm -rf {{.BUILD_DIR}}{{end}}"
+      - "{{if eq OS `windows`}}powershell Remove-Item -Force coverage.out, coverage.html -ErrorAction SilentlyContinue{{else}}rm -f coverage.out coverage.html{{end}}"
 
   tidy:
     desc: Tidy go modules
@@ -50,13 +57,16 @@ tasks:
     desc: Build and run the binary
     deps: [build]
     cmds:
-      - ./{{.BUILD_DIR}}/{{.BINARY}} {{.CLI_ARGS}}
+      - "{{.BUILD_DIR}}/{{.BINARY}} {{.CLI_ARGS}}"
 
   install:
     desc: Install the binary to GOPATH/bin
     deps: [build]
+    vars:
+      GOPATH_BIN:
+        sh: go env GOPATH
     cmds:
-      - cp {{.BUILD_DIR}}/{{.BINARY}} $(go env GOPATH)/bin/
+      - "{{if eq OS `windows`}}powershell Copy-Item {{.BUILD_DIR}}/{{.BINARY}} {{.GOPATH_BIN}}/bin/{{else}}cp {{.BUILD_DIR}}/{{.BINARY}} {{.GOPATH_BIN}}/bin/{{end}}"
 
   lint:
     desc: Run linters
