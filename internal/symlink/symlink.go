@@ -183,7 +183,7 @@ func copyFile(src, dst string) error {
 		return err
 	}
 
-	destFile, err := os.OpenFile(dst, os.O_CREATE|os.O_WRONLY|os.O_TRUNC, sourceInfo.Mode())
+	destFile, err := os.OpenFile(dst, os.O_CREATE|os.O_WRONLY|os.O_TRUNC, sourceInfo.Mode()) //nolint:gosec // Path is controlled by application, not user input
 	if err != nil {
 		return err
 	}
