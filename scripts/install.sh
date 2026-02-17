@@ -1,7 +1,9 @@
 #!/usr/bin/env bash
 #
-# dotsync installation script
+# dotsync installation script for Linux/macOS
 # Usage: curl -fsSL https://raw.githubusercontent.com/wtfzambo/dotsync/main/scripts/install.sh | bash
+#
+# For Windows, use: install.ps1
 #
 # ⚠️ IMPORTANT: This script must be EXECUTED, never SOURCED
 # ❌ WRONG: source install.sh (will exit your shell on errors)
@@ -47,6 +49,11 @@ detect_platform() {
             ;;
         Linux)
             os="Linux"
+            ;;
+        MINGW*|MSYS*|CYGWIN*)
+            log_error "Windows detected. Please use the PowerShell installer:"
+            log_error "  powershell -Command \"iwr -useb https://raw.githubusercontent.com/wtfzambo/dotsync/main/scripts/install.ps1 | iex\""
+            exit 1
             ;;
         *)
             log_error "Unsupported operating system: $(uname -s)"

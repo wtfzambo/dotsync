@@ -8,7 +8,7 @@ A lightweight CLI tool for syncing config files across machines using cloud stor
 
 ## Overview
 
-**dotsync** helps you keep your developer config files (dotfiles, AI tool configs, etc.) synchronized across multiple machines without the complexity of version control or specialized sync services. It works by moving your config files to cloud storage and creating symlinks at their original locations, letting your existing cloud provider (Google Drive, Dropbox, or iCloud) handle the synchronization.
+**dotsync** helps you keep your developer config files (dotfiles, tool configs, etc.) synchronized across multiple machines without the complexity of version control or specialized sync services. It works by moving your config files to cloud storage and creating symlinks at their original locations, letting your existing cloud provider handle the synchronization.
 
 ## Why
 
@@ -16,8 +16,8 @@ I have several tools that I use on a daily basis for software development and mo
 
 ## Features
 
-- **Multi-provider support** - Works with Google Drive, Dropbox, and iCloud Drive
-- **Auto-detection** - Automatically finds your cloud storage locations
+- **Multi-provider support** - Works with any cloud storage that you can mount locally
+- **Auto-detection** - Automatically finds your cloud storage locations if using Google Drive, Dropbox, or iCloud Drive
 - **Symlink management** - Seamlessly manages symlinks between local and cloud storage
 - **Entry-based tracking** - Groups related files together (e.g., all OpenCode configs)
 - **Cross-machine sync** - Set up once, sync everywhere
@@ -31,10 +31,16 @@ I have several tools that I use on a daily basis for software development and mo
 - One of the supported cloud storage providers (Google Drive, Dropbox, or iCloud Drive) installed and syncing
 - For building from source: Go 1.25 or later
 
-### Quick Install (macOS & Linux)
+### Quick Install
 
+**macOS & Linux:**
 ```bash
 curl -fsSL https://raw.githubusercontent.com/wtfzambo/dotsync/main/scripts/install.sh | bash
+```
+
+**Windows (PowerShell):**
+```powershell
+irm https://raw.githubusercontent.com/wtfzambo/dotsync/main/scripts/install.ps1 | iex
 ```
 
 ### Install Pre-built Binary
@@ -131,12 +137,13 @@ dotsync link opencode
 
 dotsync will create symlinks pointing to the cloud-synced files. If local files exist, you'll be prompted to back them up, skip, or abort.
 
-## Supported Cloud Providers
+## Supported Cloud Providers out of the box
 
 ### Google Drive
 
 - **macOS:** `~/Library/CloudStorage/GoogleDrive-*/My Drive`
 - **Linux:** ⚠️ `~/Google Drive` or `~/google-drive`
+- **Windows:** `G:\My Drive`
 - Auto-detection: Yes
 
 > [!WARNING]
@@ -147,13 +154,13 @@ dotsync will create symlinks pointing to the cloud-synced files. If local files 
 
 - **macOS:** `~/Library/CloudStorage/Dropbox` or `~/Dropbox`
 - **Linux:** `~/Dropbox`
+- **Windows:** `~\Dropbox`
 - Auto-detection: Yes
 
 ### iCloud Drive
 
 - **macOS:** `~/Library/Mobile Documents/com~apple~CloudDocs`
-- **Linux:** Not available
-- Auto-detection: Yes (macOS only)
+- Auto-detection: Yes
 
 If auto-detection fails, you can specify the path manually using `dotsync init --path <your-path>`.
 
