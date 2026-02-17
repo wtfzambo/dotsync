@@ -4,6 +4,8 @@ import (
 	"os"
 	"path/filepath"
 	"strings"
+
+	"github.com/wtfzambo/dotsync/internal/pathutil"
 )
 
 // DetectPath attempts to find the cloud storage path for a provider.
@@ -38,7 +40,7 @@ func DetectPath(provider Provider) string {
 // Supports glob patterns and ~ expansion.
 func findPath(pattern string) string {
 	// Expand ~ to home directory
-	expanded := expandHome(pattern)
+	expanded := pathutil.ExpandHome(pattern)
 
 	// Handle Windows %USERPROFILE%
 	expanded = os.ExpandEnv(expanded)
@@ -66,46 +68,14 @@ func findPath(pattern string) string {
 	return ""
 }
 
-// expandHome expands ~ to the user's home directory.
-func expandHome(path string) string {
-	if !strings.HasPrefix(path, "~") {
-		return path
-	}
-
-	home, err := os.UserHomeDir()
-	if err != nil {
-		return path
-	}
-
-	if path == "~" {
-		return home
-	}
-	// Handle both ~/ (Unix) and ~\ (Windows)
-	if strings.HasPrefix(path, "~/") || strings.HasPrefix(path, "~\\") {
-		return filepath.Join(home, path[2:])
-	}
-
-	return path
-}
-
 // ExpandHome is exported for use by other packages.
+// Deprecated: Use pathutil.ExpandHome instead.
 func ExpandHome(path string) string {
-	return expandHome(path)
+	return pathutil.ExpandHome(path)
 }
 
 // ContractHome replaces the home directory with ~ in a path.
+// Deprecated: Use pathutil.ContractHome instead.
 func ContractHome(path string) string {
-	home, err := os.UserHomeDir()
-	if err != nil {
-		return path
-	}
-
-	if path == home {
-		return "~"
-	}
-	if strings.HasPrefix(path, home+string(filepath.Separator)) {
-		return "~" + path[len(home):]
-	}
-
-	return path
+	return pathutil.ContractHome(path)
 }

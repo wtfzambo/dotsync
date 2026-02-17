@@ -75,45 +75,6 @@ func TestExpandHome(t *testing.T) {
 	}
 }
 
-// TestContractHome tests home directory contraction
-func TestContractHome(t *testing.T) {
-	home, err := os.UserHomeDir()
-	if err != nil {
-		t.Fatalf("failed to get home dir: %v", err)
-	}
-
-	tests := []struct {
-		name string
-		path string
-		want string
-	}{
-		{
-			name: "home directory",
-			path: home,
-			want: "~",
-		},
-		{
-			name: "path under home",
-			path: filepath.Join(home, ".config", "dotsync"),
-			want: filepath.Join("~", ".config", "dotsync"),
-		},
-		{
-			name: "path outside home",
-			path: "/usr/local/bin",
-			want: "/usr/local/bin",
-		},
-	}
-
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			got := ContractHome(tt.path)
-			if got != tt.want {
-				t.Errorf("ContractHome(%q) = %q, want %q", tt.path, got, tt.want)
-			}
-		})
-	}
-}
-
 // TestFindPath tests path finding with various patterns
 func TestFindPath(t *testing.T) {
 	tmpDir := t.TempDir()

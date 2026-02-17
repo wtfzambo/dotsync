@@ -4,12 +4,14 @@ import (
 	"fmt"
 	"os"
 	"path/filepath"
+
+	"github.com/wtfzambo/dotsync/internal/pathutil"
 )
 
 // ValidatePath checks if a path exists and is writable.
 func ValidatePath(path string) error {
 	// Expand home directory
-	expanded := expandHome(path)
+	expanded := pathutil.ExpandHome(path)
 	expanded = os.ExpandEnv(expanded)
 
 	// Check if path exists
@@ -41,7 +43,7 @@ func ValidatePath(path string) error {
 // EnsureDotsyncDir ensures the dotsync directory exists within the storage path.
 // Returns the full path to the dotsync directory.
 func EnsureDotsyncDir(storagePath string) (string, error) {
-	expanded := expandHome(storagePath)
+	expanded := pathutil.ExpandHome(storagePath)
 	expanded = os.ExpandEnv(expanded)
 
 	dotsyncDir := filepath.Join(expanded, "dotsync")
@@ -54,7 +56,7 @@ func EnsureDotsyncDir(storagePath string) (string, error) {
 
 // IsAvailable checks if the storage path is currently accessible.
 func IsAvailable(storagePath string) bool {
-	expanded := expandHome(storagePath)
+	expanded := pathutil.ExpandHome(storagePath)
 	expanded = os.ExpandEnv(expanded)
 
 	_, err := os.Stat(expanded)
@@ -63,13 +65,13 @@ func IsAvailable(storagePath string) bool {
 
 // DotsyncDir returns the full path to the dotsync directory within storage.
 func DotsyncDir(storagePath string) string {
-	expanded := expandHome(storagePath)
+	expanded := pathutil.ExpandHome(storagePath)
 	expanded = os.ExpandEnv(expanded)
 	return filepath.Join(expanded, "dotsync")
 }
 
 // ExpandPath expands ~ and environment variables in a path.
 func ExpandPath(path string) string {
-	expanded := expandHome(path)
+	expanded := pathutil.ExpandHome(path)
 	return os.ExpandEnv(expanded)
 }
